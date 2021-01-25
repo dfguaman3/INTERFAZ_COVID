@@ -5,8 +5,7 @@ from mplwidget import MplWidget
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
-#url_covid = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv"
-#url= 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv'
+
 qtCreatorFile = "interfaz.ui"
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
@@ -34,9 +33,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.listacountry.addItem(str(i))
         for j in estados:
             self.listastate.addItem(str(j))   
-        
-    
-        
         
 
     def presentarTabla(self):

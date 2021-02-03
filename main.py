@@ -1,6 +1,8 @@
+from numpy.lib.shape_base import split
 import requests,json,urllib.request, datetime, sys
 import pandas as pd
 from PyQt5 import uic, QtWidgets
+#from PyQt5.QtGui import QListWidget, QListWidgetItem, QApplication
 from mplwidget import MplWidget
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,79 +17,75 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.MplWidget = MplWidget(self.MplWidget)
         self.cargar.clicked.connect(self.getCSV)
-        self.graficar.clicked.connect(self.presentarTabla)
-        self.df = pd.read_csv('./data/covid_data.csv', parse_dates=['Country'], sep=',', na_values='')
-        #self.df2 = pd.read_csv('./frankfurt_weather.csv', parse_dates=['time'], index_col='time', sep=',', na_values='')
+        self.casos.setChecked(True)
+        self.listacountry.itemClicked.connect(self.aux)
+        self.df = pd.read_csv('./data/covid_data2.csv', parse_dates=['Country'], sep=',', na_values='')
         
+        datos=pd.DataFrame(self.df, columns= ['Country','1/22/2020'])
+        self.country_selected=''
+        self.index_country=None   
     def getCSV(self):
-        try:
-            paises = self.df['Country']
-            estados = self.df['State']
-            fechas=self.df.columns.tolist()
-            fechas2 = self.df['1/22/2020']
-            
-           
-            #fechas.groupby('Country')[col_names[2]].sum().plot(kin='bar',legend='Reverse')
-            
-            for i in paises:
-                self.listacountry.addItem(str(i))
-            for j in estados:
-                self.listastate.addItem(str(j))   
-            x_name = 'Daily Number of Cases and Deaths in Place'
-            y_name = 'Date'
-            z_name = 'Tiempo'
-            self.x = x_name
-            self.y = y_name
-            self.z = z_name
-            #self.lon = len(fechas)
         
-            self.lon = range(1,len(fechas2)+1)
-            self.MplWidget.canvas.axes.clear()
-            self.MplWidget.canvas.axes.bar(list(self.lon),fechas2, width = 0.4, align='center')
-            self.MplWidget.canvas.axes.legend((self.x, self.y), loc='upper right')
-            self.MplWidget.canvas.axes.set_title(f'{self.x} - {self.y}')
-            self.MplWidget.canvas.axes.set_xlabel('Fecha')
-            self.MplWidget.canvas.axes.set_ylabel('Numero de casos')
-            self.MplWidget.canvas.axes.grid(True)
-            self.MplWidget.canvas.draw()
-        except Exception as e:
-            print(e)
-
-
-
-    def presentarTabla(self):
+        paises = self.df['Country']
+        estados = self.df['State']
+        dias=self.df.columns.tolist()
+        self.fechas = self.df.loc['1/22/2020':'2/5/2020']
+        self.fechas2 = self.fechas.columns.tolist()
         
-        try:
-            x_name = 'Daily Number of Cases and Deaths in Place'
-            y_name = 'Date'
-            z_name = 'Tiempo'
-            self.x = x_name
-            self.y = y_name
-            self.z = z_name
-            lista_mag = []
-            lista_place =[]
-            lista_time = []
-            response = urllib.request.urlopen(url).read().decode()
-            data = json.loads(response)
-            long = len(data['data'])
-            for i in range(long): 
-                mag = data['data'][i]['date']['mag']#float
-                place = data['data'][i]['total_cases']['place']#string
-                lista_mag += [mag]
-                lista_place += [place]
+        for i in paises:
+            self.listacountry.addItem(str(i))
+            self.extrac_country=self.listacountry.currentItem()
+            self.index_country=self.listacountry.currentRow()
             
-            self.lon = range(1,len(lista_mag)+1)
-            self.MplWidget.canvas.axes.clear()
-            self.MplWidget.canvas.axes.bar(list(self.lon),lista_mag, width = 0.4, align='center')
-            self.MplWidget.canvas.axes.legend((self.x, self.y), loc='upper right')
-            self.MplWidget.canvas.axes.set_title(f'{self.x} - {self.y}')
-            self.MplWidget.canvas.axes.set_xlabel('Numero de sismos')
-            self.MplWidget.canvas.axes.set_ylabel('Magnitud (Ritcher Scale)')
-            self.MplWidget.canvas.axes.grid(True)
-            self.MplWidget.canvas.draw()
-        except Exception as e:
-            print(e)     
+        for j in estados:
+            self.listastate.addItem(str(j))
+        cases=[]
+        deaths=[]
+        tipo=[]
+        for k in range(2,15):
+            valores=self.fechas.values[6]#Australia
             
+            casos=valores[k].split(sep=" ")
+            contagios=[casos[0]]
+            muertes=[casos[2]]
+            pais=valores[0]
+            cases+=contagios
+            
+            deaths+=muertes
+            
+        print(cases)
+        print(deaths)
+            
+        self.lon = range(1,len(dias)+1)
+        
+        x_name = 'Daily Number of Cases and Deaths in '
+        y_name = 'Date'
+        z_name = 'Tiempo'
+        self.x = x_name
+        self.y = y_name
+        self.z = z_name
+        if self.casos.isChecked():
+            tipo=cases
+        elif self.muertes.isChecked():
+            tipo=deaths
+            
+
+        self.MplWidget.canvas.axes.clear()
+        self.MplWidget.canvas.axes.bar(list(self.fechas2[2:15]),tipo, width = 1, align='center')
+        self.MplWidget.canvas.axes.legend((self.x, self.y), loc='upper right')
+        self.MplWidget.canvas.axes.set_title(f'{self.x} - {self.y}')
+        self.MplWidget.canvas.axes.set_xlabel('Fecha')
+        self.MplWidget.canvas.axes.set_ylabel('Numero de casos')
+        self.MplWidget.canvas.axes.grid(True)
+        self.MplWidget.canvas.draw()
+        
+    def aux(self,extrac_country):
+        self.country_selected=str(extrac_country.text())
+        
+        print(self.country_selected)
+        
+        
+        
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

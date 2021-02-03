@@ -2,12 +2,10 @@ from numpy.lib.shape_base import split
 import requests,json,urllib.request, datetime, sys
 import pandas as pd
 from PyQt5 import uic, QtWidgets
-#from PyQt5.QtGui import QListWidget, QListWidgetItem, QApplication
 from mplwidget import MplWidget
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
-url='https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.json'
 qtCreatorFile = "interfaz.ui"
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -84,9 +82,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         
         print(self.country_selected)
         
-        
-        
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = MyApp()

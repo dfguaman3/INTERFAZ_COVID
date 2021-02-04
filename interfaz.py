@@ -19,7 +19,7 @@ class Ui_Dialog(object):
         self.cargar.setGeometry(QtCore.QRect(20, 10, 93, 28))
         self.cargar.setObjectName("cargar")
         self.MplWidget = QtWidgets.QWidget(Dialog)
-        self.MplWidget.setGeometry(QtCore.QRect(20, 50, 851, 411))
+        self.MplWidget.setGeometry(QtCore.QRect(20, 50, 851, 451))
         self.MplWidget.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.MplWidget.setObjectName("MplWidget")
         self.pushButton = QtWidgets.QPushButton(Dialog)

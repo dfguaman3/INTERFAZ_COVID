@@ -17,54 +17,48 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.cargar.clicked.connect(self.getCSV)
         self.casos.setChecked(True)
         self.listacountry.itemClicked.connect(self.aux)
+        self.listacountry.itemClicked.connect(self.getCSV)
+        self.scrollbar.tickInterval()
         self.df = pd.read_csv('./data/covid_data2.csv', parse_dates=['Country'], sep=',', na_values='')
+        
         self.country_selected=''
-           
+        
+    def interval(self):
+        self.inter=15
+        return self.inter
     def getCSV(self):
-        cases=[]
-        deaths=[]
-        tipo=[]
+        cases,deaths,tipo=[],[],[]
+        
         paises = self.df['Country']
         estados = self.df['State']
-        dias=self.df.columns.tolist()
-        self.fechas = self.df.loc['1/22/2020':'2/5/2020']
-        self.fechas2 = self.fechas.columns.tolist()
-        print(self.fechas.values[0][0])
-        print(len(self.fechas))
+        
+        self.list_date=None
+        self.pais=self.df.iloc[:, 0]
+        self.country=self.pais[0]
+        aux2=0
+        for a in range(2,100):
+            
+            for b in range(1,330):
+                if self.country_selected==self.pais[b]:
+                    aux2=b
+                    
+
+            self.primera=self.df.iloc[:, a].values[aux2] # indice del pais 
+            self.list_date = self.df.columns.tolist()
+            casos=self.primera.split(sep=" ")
+            contagios=[casos[0]]
+            muertes=[casos[2]]
+            cases+=contagios
+            deaths+=muertes
+        segunda=self.df.iloc[:, 1] # Segunda columna
+        ultima=self.df.iloc[:, -1] # Última columna
+        #print(ultima.values[265])
         for i in paises:
             self.listacountry.addItem(str(i))
             self.extrac_country=self.listacountry.currentItem()
-            self.index_country=self.listacountry.currentRow()
-            
         for j in estados:
             self.listastate.addItem(str(j))
-        '''
-        for l in range(2,len(self.fechas)):
-            if str(self.country_selected)==str(self.fechas.values[0][0]):
-                valores=self.fechas.values[l]
-                for k in range(2,15):
-                    casos=valores[k].split(sep=" ")
-                    contagios=[casos[0]]
-                    muertes=[casos[2]]
-                    pais=valores[0]
-                    cases+=contagios
-                    deaths+=muertes
-            
-        '''
-        for k in range(2,15):
-            valores=self.fechas.values[10]#Australia
-            casos=valores[k].split(sep=" ")
-            contagios=[casos[0]]
-            muertes=[casos[2]]
-            pais=valores[0]
-            cases+=contagios
-            deaths+=muertes
-            
-        print(cases)
-        print(deaths)
-        
-        self.lon = range(1,len(dias)+1)
-        
+          
         x_name = 'Daily Number of Cases and Deaths in '
         y_name = 'Date'
         z_name = 'Tiempo'
@@ -75,9 +69,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             tipo=cases
         elif self.muertes.isChecked():
             tipo=deaths
-            
         self.MplWidget.canvas.axes.clear()
-        self.MplWidget.canvas.axes.bar(list(self.fechas2[2:15]),tipo, width = 0.2, align='center')
+        self.MplWidget.canvas.axes.bar(self.list_date[2:100],tipo, width = 0.2, align='center')
         self.MplWidget.canvas.axes.legend((self.x, self.y), loc='upper right')
         self.MplWidget.canvas.axes.set_title(f'{self.x} - {self.y}')
         self.MplWidget.canvas.axes.set_xlabel('Fecha')
@@ -88,7 +81,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def aux(self,extrac_country):
         self.country_selected=str(extrac_country.text())
         
-        print(self.country_selected)
+        #print(self.country_selected)
         
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

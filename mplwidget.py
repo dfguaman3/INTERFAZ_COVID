@@ -13,7 +13,7 @@ class MplWidget(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
 
-        self.canvas = FigureCanvas(Figure(figsize=(10,5), dpi=None, facecolor='lightgrey', edgecolor=None, linewidth=1, frameon=None, subplotpars=None, tight_layout=None, constrained_layout=None))# =fig
+        self.canvas = FigureCanvas(Figure(figsize=(9,4.5), dpi=None, facecolor='lightgrey', edgecolor=None, linewidth=1, frameon=None, subplotpars=None, tight_layout=None, constrained_layout=None))# =fig
 
         vertical_layout = QVBoxLayout()
         vertical_layout.addWidget(self.canvas)

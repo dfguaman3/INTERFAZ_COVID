@@ -55,6 +55,20 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         cases=[]
         deaths=[]
         
+        '''
+        for l in range(2,len(self.fechas)):
+            if str(self.country_selected)==str(self.fechas.values[0][0]):
+                valores=self.fechas.values[l]
+                for k in range(2,15):
+                    casos=valores[k].split(sep=" ")
+                    contagios=[casos[0]]
+                    muertes=[casos[2]]
+                    pais=valores[0]
+                    cases+=contagios
+                    deaths+=muertes
+            
+        '''
+
         for k in range(2,20):
             valores=self.fechas.values[6]
             casos=valores[k].split(sep=" ")

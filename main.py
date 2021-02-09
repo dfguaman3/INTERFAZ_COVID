@@ -18,14 +18,16 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.casos.setChecked(True)
         self.listacountry.itemClicked.connect(self.aux)
         self.listacountry.itemClicked.connect(self.getCSV)
-        self.scrollbar.tickInterval()
+        self.scrollbar.setMinimum(10)
+        self.scrollbar.setMaximum(100)
+        self.scrollbar.setSingleStep(10)
+        
+        self.scrollbar.setTickInterval(10)
         self.df = pd.read_csv('./data/covid_data2.csv', parse_dates=['Country'], sep=',', na_values='')
         
         self.country_selected=''
-        
-    def interval(self):
-        self.inter=15
-        return self.inter
+    
+    
     def getCSV(self):
         cases,deaths,tipo=[],[],[]
         
@@ -36,7 +38,9 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pais=self.df.iloc[:, 0]
         self.country=self.pais[0]
         aux2=0
-        for a in range(2,100):
+        valor = self.scrollbar.value()
+        print(valor)
+        for a in range(2,valor):
             
             for b in range(1,330):
                 if self.country_selected==self.pais[b]:
@@ -59,18 +63,20 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         for j in estados:
             self.listastate.addItem(str(j))
           
-        x_name = 'Daily Number of Cases and Deaths in '
-        y_name = 'Date'
-        z_name = 'Tiempo'
+        x_name = 'Contagios '
+        y_name = 'Muertes'
         self.x = x_name
         self.y = y_name
+    
         
-        if self.casos.isChecked():
-            tipo=cases
-        elif self.muertes.isChecked():
-            tipo=deaths
         self.MplWidget.canvas.axes.clear()
-        self.MplWidget.canvas.axes.bar(self.list_date[2:100],tipo, width = 0.2, align='center')
+        if self.casos.isChecked():
+            self.MplWidget.canvas.axes.bar(self.list_date[2:valor],cases, width = 0.2, align='center',autoscaley_on=True)
+        elif self.muertes.isChecked():
+            self.MplWidget.canvas.axes.bar(self.list_date[2:valor],deaths, width = 0.2, align='center')
+        elif self.ambos.isChecked():
+            self.MplWidget.canvas.axes.bar(self.list_date[2:valor],cases, width = 0.2, align='center')
+            self.MplWidget.canvas.axes.bar(self.list_date[2:valor],deaths, width = 0.2, align='center')
         self.MplWidget.canvas.axes.legend((self.x, self.y), loc='upper right')
         self.MplWidget.canvas.axes.set_title(f'{self.x} - {self.y}')
         self.MplWidget.canvas.axes.set_xlabel('Fecha')

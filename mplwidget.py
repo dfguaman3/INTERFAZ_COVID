@@ -10,7 +10,7 @@ from matplotlib.figure import Figure
 
 class MplWidget(QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None,yscale='linear'):
         QWidget.__init__(self, parent)
 
         self.canvas = FigureCanvas(Figure(figsize=(9,4.5), dpi=None, facecolor='lightgrey', edgecolor=None, linewidth=1, frameon=None, subplotpars=None, tight_layout=None, constrained_layout=None))# =fig
